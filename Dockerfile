@@ -11,8 +11,8 @@ ADD hello.cobol /app/hello.cobol
 RUN cd /app && cobc -x -o hw hello.cobol
 COPY --from=gobuild /src/invoke /app/invoke
 
-#EXPOSE 80
-#EXPOSE 8080
+EXPOSE 80
+EXPOSE 8080
 
 WORKDIR /app
 CMD ["/app/invoke"]
