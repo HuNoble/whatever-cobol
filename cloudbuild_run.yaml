@@ -1,0 +1,15 @@
+
+steps:
+    # 1. Build the image.
+    - name: 'gcr.io/cloud-builders/docker'
+      args: ['build', '-t', 'eu.gcr.io/$PROJECT_ID/whatevercobol_run:$SHORT_SHA', '--build-arg', 'SHA_CLOUDBUILD=$SHORT_SHA', '.', '--cache-from', 'eu.gcr.io/$PROJECT_ID/whatevercobol_run']
+    # 2. Tag the image with short_sha
+    - name: 'gcr.io/cloud-builders/docker'
+      args: ['tag', 'eu.gcr.io/$PROJECT_ID/whatevercobol_run:$SHORT_SHA', 'eu.gcr.io/$PROJECT_ID/whatevercobol_run:latest']
+    # 3. Deploy the application to GCR
+    - name: 'gcr.io/cloud-builders/docker'
+      args: ['push', 'eu.gcr.io/$PROJECT_ID/whatevercobol_run']
+    # 4. Deploy container image to Cloud Run
+    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+      entrypoint: gcloud
+      args: ['run', 'deploy', 'coboltastic', '--image', 'gcr.io/$PROJECT_ID/whatevercobol_run', '--region', 'europe-north1']
